@@ -9,6 +9,7 @@ import CoreData
 import SwiftUI
 
 // MARK: - Models
+
 struct TaskItem: Identifiable {
     let id = UUID()
     let title: String
@@ -51,7 +52,7 @@ struct ContentView: View {
                         }
                     }
                     ToolbarItem(placement: .topBarLeading) {
-                        Button(action: { } ) {
+                        Button(action: {}) {
                             Label("Task Management", systemImage: "person.fill")
                         }
                     }
