@@ -5,8 +5,20 @@
 //  Created by ENB Mac Mini on 08/12/25.
 //
 
-import SwiftUI
 import CoreData
+import SwiftUI
+
+// MARK: - Models
+struct TaskItem: Identifiable {
+    let id = UUID()
+    let title: String
+    let subtitle: String
+    let date: String
+    let progress: Double?
+    let priority: String?
+    let members: [String] // Placeholder for avatar image names
+    let assigne: String?
+}
 
 struct ContentView: View {
     @Environment(\.managedObjectContext) private var viewContext
@@ -18,28 +30,35 @@ struct ContentView: View {
 
     var body: some View {
         NavigationView {
-            List {
-                ForEach(items) { item in
-                    NavigationLink {
-                        Text("Item at \(item.timestamp!, formatter: itemFormatter)")
-                    } label: {
-                        Text(item.timestamp!, formatter: itemFormatter)
+            ZStack {
+                List {
+                    ForEach(items) { item in
+                        NavigationLink {
+                            Text("Item at \(item.timestamp!, formatter: itemFormatter)")
+                        } label: {
+                            Text(item.timestamp!, formatter: itemFormatter)
+                        }
+                    }
+                    .onDelete(perform: deleteItems)
+                }
+                .toolbar {
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                        EditButton()
+                    }
+                    ToolbarItem {
+                        Button(action: addItem) {
+                            Label("Add Item", systemImage: "plus")
+                        }
+                    }
+                    ToolbarItem(placement: .topBarLeading) {
+                        Button(action: { } ) {
+                            Label("Task Management", systemImage: "person.fill")
+                        }
                     }
                 }
-                .onDelete(perform: deleteItems)
             }
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    EditButton()
-                }
-                ToolbarItem {
-                    Button(action: addItem) {
-                        Label("Add Item", systemImage: "plus")
-                    }
-                }
-            }
-            Text("Select an item")
         }
+        .navigationViewStyle(StackNavigationViewStyle()) // Important for iPhone
     }
 
     private func addItem() {
