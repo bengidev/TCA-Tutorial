@@ -11,8 +11,10 @@ import UIKit
 
 @Reducer
 struct CounterReducer {
+    @Dependency(\.todoClientAPI) var todoClientAPI
+
     @ObservableState
-    struct State {
+    struct State: Equatable {
         var count = 0
         var fact: String?
         var isLoading = false
@@ -69,13 +71,10 @@ struct CounterReducer {
 
             return .run { [count = state.count] send in
                 do {
-                    let (data, _) = try await URLSession.shared
-                        .data(from: URL(string: "https://jsonplaceholder.typicode.com/todos/\(count)")!)
-                    let fact = await Todo.decode(from: data)
-
-                    await send(.factResponse(fact.title))
+                    let todo = try await self.todoClientAPI.fetch(count)
+                    await send(.factResponse(todo.title))
                 } catch {
-                    await send(.factResponse(Todo.empty.title))
+                    await send(.factResponse(TodoDTO.empty.title))
                 }
             }
 
