@@ -6,11 +6,9 @@
 //
 
 import ComposableArchitecture
-import Foundation
 import UIKit
 
-@Reducer
-struct CounterReducer {
+@Reducer struct CounterReducer {
     @Dependency(\.todoClientAPI) var todoClientAPI
 
     @ObservableState
@@ -30,58 +28,61 @@ struct CounterReducer {
         case factResponse(String)
     }
 
-    nonisolated enum CancelID {
+    enum CancelID {
         case timer
     }
 
-    func reduce(into state: inout State, action: Action) -> Effect<Action> {
-        switch action {
-        case .decrementButtonTapped:
-            state.count -= 1
-            state.fact = nil
-            return .none
+    var body: some ReducerOf<Self> {
+        Reduce { state, action in
+            // Core logic of the app feature
+            switch action {
+            case .decrementButtonTapped:
+                state.count -= 1
+                state.fact = nil
+                return .none
 
-        case .incrementButtonTapped:
-            state.count += 1
-            state.fact = nil
-            return .none
+            case .incrementButtonTapped:
+                state.count += 1
+                state.fact = nil
+                return .none
 
-        case .toggleTimerButtonTapped:
-            state.isTimerRunning.toggle()
-            if state.isTimerRunning {
-                return .run { send in
-                    while true {
-                        try await _Concurrency.Task.sleep(nanoseconds: 1_000_000_000) // 1 second
-                        await send(.timerTick)
+            case .toggleTimerButtonTapped:
+                state.isTimerRunning.toggle()
+                if state.isTimerRunning {
+                    return .run { send in
+                        while true {
+                            try await _Concurrency.Task.sleep(nanoseconds: 1_000_000_000) // 1 second
+                            await send(.timerTick)
+                        }
+                    }
+                    .cancellable(id: CancelID.timer)
+                } else {
+                    return .cancel(id: CancelID.timer)
+                }
+
+            case .timerTick:
+                state.count += 1
+                state.fact = nil
+                return .none
+
+            case .factButtonTapped:
+                state.fact = nil
+                state.isLoading = true
+
+                return .run { [count = state.count] send in
+                    do {
+                        let todo = try await self.todoClientAPI.fetch(count)
+                        await send(.factResponse(todo.title))
+                    } catch {
+                        await send(.factResponse(TodoDTO.empty.title))
                     }
                 }
-                .cancellable(id: CancelID.timer)
-            } else {
-                return .cancel(id: CancelID.timer)
+
+            case .factResponse(let fact):
+                state.fact = fact
+                state.isLoading = false
+                return .none
             }
-
-        case .timerTick:
-            state.count += 1
-            state.fact = nil
-            return .none
-
-        case .factButtonTapped:
-            state.fact = nil
-            state.isLoading = true
-
-            return .run { [count = state.count] send in
-                do {
-                    let todo = try await self.todoClientAPI.fetch(count)
-                    await send(.factResponse(todo.title))
-                } catch {
-                    await send(.factResponse(TodoDTO.empty.title))
-                }
-            }
-
-        case .factResponse(let fact):
-            state.fact = fact
-            state.isLoading = false
-            return .none
         }
     }
 }
