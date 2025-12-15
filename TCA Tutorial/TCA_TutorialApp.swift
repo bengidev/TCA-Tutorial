@@ -11,8 +11,8 @@ import SwiftUI
 
 @main
 struct TCA_TutorialApp: App {
-    static let store = Store(initialState: CounterReducer.State()) {
-        CounterReducer()
+    static let store = Store(initialState: AppReducer.State()) {
+        AppReducer()
             ._printChanges()
     }
 
@@ -20,10 +20,7 @@ struct TCA_TutorialApp: App {
 
     var body: some Scene {
         WindowGroup {
-//            ContentView()
-//                .environment(\.managedObjectContext, persistenceController.container.viewContext)
-
-            CounterView(store: TCA_TutorialApp.store)
+            AppView(store: TCA_TutorialApp.store)
         }
     }
 }
