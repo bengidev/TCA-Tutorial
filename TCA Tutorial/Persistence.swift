@@ -8,6 +8,8 @@
 import CoreData
 
 struct PersistenceController {
+    // MARK: Static Properties
+
     static let shared = PersistenceController()
 
     @MainActor
@@ -29,14 +31,18 @@ struct PersistenceController {
         return result
     }()
 
+    // MARK: Properties
+
     let container: NSPersistentContainer
 
+    // MARK: Lifecycle
+
     init(inMemory: Bool = false) {
-        container = NSPersistentContainer(name: "TCA_Tutorial")
+        self.container = NSPersistentContainer(name: "TCA_Tutorial")
         if inMemory {
-            container.persistentStoreDescriptions.first!.url = URL(fileURLWithPath: "/dev/null")
+            self.container.persistentStoreDescriptions.first!.url = URL(fileURLWithPath: "/dev/null")
         }
-        container.loadPersistentStores(completionHandler: { _, error in
+        self.container.loadPersistentStores(completionHandler: { _, error in
             if let error = error as NSError? {
                 // Replace this implementation with code to handle the error appropriately.
                 // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
@@ -52,6 +58,6 @@ struct PersistenceController {
                 fatalError("Unresolved error \(error), \(error.userInfo)")
             }
         })
-        container.viewContext.automaticallyMergesChangesFromParent = true
+        self.container.viewContext.automaticallyMergesChangesFromParent = true
     }
 }

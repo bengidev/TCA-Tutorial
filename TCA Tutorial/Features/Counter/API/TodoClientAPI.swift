@@ -8,9 +8,13 @@
 import ComposableArchitecture
 import Foundation
 
+// MARK: - TodoClientAPI
+
 struct TodoClientAPI {
     var fetch: (Int) async throws -> TodoDTO
 }
+
+// MARK: DependencyKey
 
 extension TodoClientAPI: DependencyKey {
     static let liveValue = Self(

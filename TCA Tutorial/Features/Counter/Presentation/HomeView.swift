@@ -1,33 +1,43 @@
 import SwiftUI
 import UIKit
 
-// MARK: - Screen Size Helper
+// MARK: - DeviceType
 
 enum DeviceType {
-    case iPhoneMini  // < 375pt width (iPhone SE, mini)
-    case iPhoneStandard  // 375-390pt (iPhone 12/13/14/15 standard)
-    case iPhonePlus  // 390-430pt (Pro Max, Plus models)
-    case iPad  // >= 768pt (iPad, iPad Pro)
+    case iPhoneMini // < 375pt width (iPhone SE, mini)
+    case iPhoneStandard // 375-390pt (iPhone 12/13/14/15 standard)
+    case iPhonePlus // 390-430pt (Pro Max, Plus models)
+    case iPad // >= 768pt (iPad, iPad Pro)
+
+    // MARK: Static Computed Properties
 
     static var current: DeviceType {
         let width = UIScreen.main.bounds.width
         switch width {
         case ..<375: return .iPhoneMini
-        case 375..<390: return .iPhoneStandard
-        case 390..<768: return .iPhonePlus
+        case 375 ..< 390: return .iPhoneStandard
+        case 390 ..< 768: return .iPhonePlus
         default: return .iPad
         }
     }
+
+    // MARK: Computed Properties
 
     var isIPad: Bool {
         self == .iPad
     }
 }
 
+// MARK: - ScreenSize
+
 enum ScreenSize {
+    // MARK: Static Properties
+
     static let width = UIScreen.main.bounds.width
     static let height = UIScreen.main.bounds.height
     static let deviceType = DeviceType.current
+
+    // MARK: Static Computed Properties
 
     // MARK: - Card Sizing
 
@@ -36,12 +46,15 @@ enum ScreenSize {
         case .iPhoneMini:
             let availableWidth = width - (horizontalPadding * 2)
             return max(availableWidth * 0.43, 150)
+
         case .iPhoneStandard:
             let availableWidth = width - (horizontalPadding * 2)
             return max(availableWidth * 0.45, 160)
+
         case .iPhonePlus:
             let availableWidth = width - (horizontalPadding * 2)
             return max(availableWidth * 0.45, 180)
+
         case .iPad:
             let availableWidth = width - (horizontalPadding * 2)
             return max(availableWidth * 0.28, 220)
@@ -159,60 +172,66 @@ enum ScreenSize {
     }
 
     static var minButtonHeight: CGFloat {
-        44  // Apple HIG minimum tap target
+        44 // Apple HIG minimum tap target
     }
 }
 
-// MARK: - Haptic Manager
+// MARK: - HapticManager
 
 class HapticManager {
+    // MARK: Static Properties
+
     static let shared = HapticManager()
+
+    // MARK: Properties
 
     private let lightImpact = UIImpactFeedbackGenerator(style: .light)
     private let mediumImpact = UIImpactFeedbackGenerator(style: .medium)
     private let heavyImpact = UIImpactFeedbackGenerator(style: .heavy)
 
+    // MARK: Lifecycle
+
     private init() {
-        lightImpact.prepare()
-        mediumImpact.prepare()
-        heavyImpact.prepare()
+        self.lightImpact.prepare()
+        self.mediumImpact.prepare()
+        self.heavyImpact.prepare()
     }
+
+    // MARK: Functions
 
     func impact(_ style: UIImpactFeedbackGenerator.FeedbackStyle = .medium) {
         switch style {
         case .light:
-            lightImpact.impactOccurred()
-            lightImpact.prepare()
+            self.lightImpact.impactOccurred()
+            self.lightImpact.prepare()
+
         case .medium:
-            mediumImpact.impactOccurred()
-            mediumImpact.prepare()
+            self.mediumImpact.impactOccurred()
+            self.mediumImpact.prepare()
+
         case .heavy:
-            heavyImpact.impactOccurred()
-            heavyImpact.prepare()
+            self.heavyImpact.impactOccurred()
+            self.heavyImpact.prepare()
+
         case .soft:
-            lightImpact.impactOccurred()
-            lightImpact.prepare()
+            self.lightImpact.impactOccurred()
+            self.lightImpact.prepare()
+
         case .rigid:
-            heavyImpact.impactOccurred()
-            heavyImpact.prepare()
+            self.heavyImpact.impactOccurred()
+            self.heavyImpact.prepare()
+
         @unknown default:
-            mediumImpact.impactOccurred()
-            mediumImpact.prepare()
+            self.mediumImpact.impactOccurred()
+            self.mediumImpact.prepare()
         }
     }
 }
 
-// MARK: - Models (UPDATED)
+// MARK: - Task
 
 struct Task: Identifiable, Equatable {
-    let id = UUID()
-    let title: String
-    let description: String
-    let dueDate: Date
-    let priority: Priority
-    var status: TaskStatus  // Changed to var for updates
-    let meetingTime: String?
-    let teamMembers: [User]?
+    // MARK: Nested Types
 
     enum Priority: String {
         case high = "High priority"
@@ -224,6 +243,8 @@ struct Task: Identifiable, Equatable {
         case notStarted = "Not Started"
         case inProgress = "In Progress"
         case completed = "Completed"
+
+        // MARK: Computed Properties
 
         var color: Color {
             switch self {
@@ -248,22 +269,45 @@ struct Task: Identifiable, Equatable {
         }
     }
 
+    // MARK: Properties
+
+    let id = UUID()
+    let title: String
+    let description: String
+    let dueDate: Date
+    let priority: Priority
+    var status: TaskStatus // Changed to var for updates
+    let meetingTime: String?
+    let teamMembers: [User]?
+
+    // MARK: Static Functions
+
     static func == (lhs: Task, rhs: Task) -> Bool {
         lhs.id == rhs.id
     }
 }
 
+// MARK: - User
+
 struct User: Identifiable, Equatable {
+    // MARK: Properties
+
     let id = UUID()
     let name: String
     let avatar: String
+
+    // MARK: Static Functions
 
     static func == (lhs: User, rhs: User) -> Bool {
         lhs.id == rhs.id
     }
 }
 
+// MARK: - Meeting
+
 struct Meeting: Identifiable, Equatable {
+    // MARK: Properties
+
     let id = UUID()
     let title: String
     let description: String
@@ -272,20 +316,26 @@ struct Meeting: Identifiable, Equatable {
     let participants: [User]
     let location: String?
 
+    // MARK: Static Functions
+
     static func == (lhs: Meeting, rhs: Meeting) -> Bool {
         lhs.id == rhs.id
     }
 }
 
-// MARK: - Main View (UPDATED - Using native TabView)
+// MARK: - TaskManagementView
 
 struct TaskManagementView: View {
+    // MARK: SwiftUI Properties
+
     @State private var selectedTab: TabItem = .home
     @State private var isTabBarVisible: Bool = true
 
+    // MARK: Content Properties
+
     var body: some View {
-        TabView(selection: $selectedTab) {
-            HomeTabView(isTabBarVisible: $isTabBarVisible)
+        TabView(selection: self.$selectedTab) {
+            HomeTabView(isTabBarVisible: self.$isTabBarVisible)
                 .tabItem {
                     Label("Home", systemImage: TabItem.home.rawValue)
                 }
@@ -318,26 +368,31 @@ struct TaskManagementView: View {
         .accentColor(Color(hex: "#7FE8A8"))
         .onAppear {
             // Set initial tab bar visibility
-            updateTabBarVisibility(isTabBarVisible)
+            self.updateTabBarVisibility(self.isTabBarVisible)
         }
-        .onChange(of: isTabBarVisible) { newValue in
-            updateTabBarVisibility(newValue)
+        .onChange(of: self.isTabBarVisible) { newValue in
+            self.updateTabBarVisibility(newValue)
         }
-        .onChange(of: selectedTab) { _ in
+        .onChange(of: self.selectedTab) { _ in
             HapticManager.shared.impact(.light)
         }
     }
+
+    // MARK: Functions
 
     private func updateTabBarVisibility(_ isVisible: Bool) {
         UITabBar.appearance().isHidden = !isVisible
     }
 }
 
-// MARK: - Home Tab View
+// MARK: - HomeTabView
 
 struct HomeTabView: View {
+    // MARK: SwiftUI Properties
+
     @Binding var isTabBarVisible: Bool
-    @State private var selectedFilter: Task.TaskStatus? = nil  // nil = All tasks
+
+    @State private var selectedFilter: Task.TaskStatus? = nil // nil = All tasks
     @State private var selectedTask: Task?
     @State private var showingTaskDetail = false
     @State private var selectedMeeting: Meeting?
@@ -345,12 +400,14 @@ struct HomeTabView: View {
     @State private var lastScrollOffset: CGFloat = 0
     @State private var scrollOffset: CGFloat = 0
 
+    // MARK: Properties
+
     let currentDate = Date()
 
     let sampleMeeting = Meeting(
         title: "Team Meeting",
         description:
-            "Discuss the overview of the project and plan for next sprint. Review team progress and address any blockers.",
+        "Discuss the overview of the project and plan for next sprint. Review team progress and address any blockers.",
         time: "11:00-12:15",
         date: Date(),
         participants: [
@@ -494,6 +551,8 @@ struct HomeTabView: View {
         ),
     ]
 
+    // MARK: Content Properties
+
     var body: some View {
         ZStack {
             Color(hex: "#1C1C1E")
@@ -513,57 +572,57 @@ struct HomeTabView: View {
                         .frame(height: 0)
                         VStack(alignment: .leading, spacing: ScreenSize.verticalSpacing) {
                             ProductivityCard(
-                                isSelected: selectedTask == nil && selectedMeeting == nil
+                                isSelected: self.selectedTask == nil && self.selectedMeeting == nil
                             ) {
-                                selectedTask = nil
-                                selectedMeeting = nil
+                                self.selectedTask = nil
+                                self.selectedMeeting = nil
                                 print("Productivity card tapped")
                             }
 
                             TodayTasksSection(
-                                tasks: todayTasks,
-                                meeting: sampleMeeting,
-                                selectedTask: $selectedTask,
-                                selectedMeeting: $selectedMeeting,
+                                tasks: self.todayTasks,
+                                meeting: self.sampleMeeting,
+                                selectedTask: self.$selectedTask,
+                                selectedMeeting: self.$selectedMeeting,
                                 onTaskTap: { task in
                                     HapticManager.shared.impact(.medium)
 
                                     withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
-                                        selectedTask = task
-                                        selectedMeeting = nil
+                                        self.selectedTask = task
+                                        self.selectedMeeting = nil
                                     }
 
                                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
-                                        showingTaskDetail = true
+                                        self.showingTaskDetail = true
                                     }
                                 },
                                 onMeetingTap: { meeting in
                                     HapticManager.shared.impact(.medium)
 
                                     withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
-                                        selectedMeeting = meeting
-                                        selectedTask = nil
+                                        self.selectedMeeting = meeting
+                                        self.selectedTask = nil
                                     }
 
                                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
-                                        showingMeetingDetail = true
+                                        self.showingMeetingDetail = true
                                     }
                                 }
                             )
 
                             AllTasksSection(
-                                selectedFilter: $selectedFilter,
-                                tasks: allTasks,
-                                selectedTask: $selectedTask,
+                                selectedFilter: self.$selectedFilter,
+                                tasks: self.allTasks,
+                                selectedTask: self.$selectedTask,
                                 onTaskTap: { task in
                                     HapticManager.shared.impact(.medium)
 
                                     withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
-                                        selectedTask = task
+                                        self.selectedTask = task
                                     }
 
                                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
-                                        showingTaskDetail = true
+                                        self.showingTaskDetail = true
                                     }
                                 }
                             )
@@ -573,49 +632,53 @@ struct HomeTabView: View {
                     }
                     .coordinateSpace(name: "scroll")
                     .onPreferenceChange(ScrollOffsetPreferenceKey.self) { value in
-                        let delta = value - lastScrollOffset
-                        lastScrollOffset = value
+                        let delta = value - self.lastScrollOffset
+                        self.lastScrollOffset = value
 
                         // Hide tab bar when scrolling down (delta < 0)
                         // Show tab bar when scrolling up (delta > 0) or at top (value >= 0)
                         if value >= -10 {
                             // Near the top, always show tab bar
                             withAnimation(.easeInOut(duration: 0.25)) {
-                                isTabBarVisible = true
+                                self.isTabBarVisible = true
                             }
                         } else if delta < -5 {
                             // Scrolling down significantly
                             withAnimation(.easeInOut(duration: 0.25)) {
-                                isTabBarVisible = false
+                                self.isTabBarVisible = false
                             }
                         } else if delta > 5 {
                             // Scrolling up significantly
                             withAnimation(.easeInOut(duration: 0.25)) {
-                                isTabBarVisible = true
+                                self.isTabBarVisible = true
                             }
                         }
                     }
                 }
             }
-            .sheet(isPresented: $showingTaskDetail) {
+            .sheet(isPresented: self.$showingTaskDetail) {
                 if let task = selectedTask {
-                    TaskDetailView(task: task, isPresented: $showingTaskDetail)
+                    TaskDetailView(task: task, isPresented: self.$showingTaskDetail)
                 }
             }
-            .sheet(isPresented: $showingMeetingDetail) {
+            .sheet(isPresented: self.$showingMeetingDetail) {
                 if let meeting = selectedMeeting {
-                    MeetingDetailView(meeting: meeting, isPresented: $showingMeetingDetail)
+                    MeetingDetailView(meeting: meeting, isPresented: self.$showingMeetingDetail)
                 }
             }
         }
     }
 }
 
-// MARK: - Placeholder Tab Views
+// MARK: - FolderTabView
 
 struct FolderTabView: View {
+    // MARK: SwiftUI Properties
+
     @State private var isAnimating = false
     @State private var isPressed = false
+
+    // MARK: Content Properties
 
     var body: some View {
         ZStack {
@@ -626,10 +689,11 @@ struct FolderTabView: View {
                 Image(systemName: "folder.fill")
                     .font(.system(size: ScreenSize.largeIconSize))
                     .foregroundColor(Color(hex: "#7FE8A8"))
-                    .scaleEffect(isAnimating ? 1.1 : 1.0)
+                    .scaleEffect(self.isAnimating ? 1.1 : 1.0)
                     .animation(
                         .easeInOut(duration: 1.0).repeatForever(autoreverses: true),
-                        value: isAnimating)
+                        value: self.isAnimating
+                    )
 
                 Text("Folders")
                     .font(.system(size: ScreenSize.titleFontSize, weight: .bold))
@@ -656,31 +720,42 @@ struct FolderTabView: View {
                     .background(Color(hex: "#7FE8A8"))
                     .clipShape(RoundedRectangle(cornerRadius: 12))
                 }
-                .scaleEffect(isPressed ? 0.95 : 1.0)
-                .animation(.spring(response: 0.3, dampingFraction: 0.6), value: isPressed)
+                .scaleEffect(self.isPressed ? 0.95 : 1.0)
+                .animation(.spring(response: 0.3, dampingFraction: 0.6), value: self.isPressed)
                 .buttonStyle(PlainButtonStyle())
                 .onLongPressGesture(
                     minimumDuration: 0.5,
                     pressing: { pressing in
                         withAnimation {
-                            isPressed = pressing
+                            self.isPressed = pressing
                         }
-                    }, perform: {})
+                    }, perform: {}
+                )
             }
         }
         .onAppear {
-            isAnimating = true
+            self.isAnimating = true
         }
     }
 }
 
+// MARK: - AddTabView
+
 struct AddTabView: View {
+    // MARK: Nested Types
+
+    enum AddOption {
+        case task
+        case meeting
+        case note
+    }
+
+    // MARK: SwiftUI Properties
+
     @State private var isRotating = false
     @State private var selectedOption: AddOption? = nil
 
-    enum AddOption {
-        case task, meeting, note
-    }
+    // MARK: Content Properties
 
     var body: some View {
         ZStack {
@@ -691,11 +766,12 @@ struct AddTabView: View {
                 Image(systemName: "plus.circle.fill")
                     .font(.system(size: ScreenSize.largeIconSize))
                     .foregroundColor(Color(hex: "#7FE8A8"))
-                    .rotationEffect(.degrees(isRotating ? 90 : 0))
+                    .rotationEffect(.degrees(self.isRotating ? 90 : 0))
                     .animation(
                         .spring(response: 0.6, dampingFraction: 0.6).repeatForever(
                             autoreverses: true),
-                        value: isRotating)
+                        value: self.isRotating
+                    )
 
                 Text("Create New")
                     .font(.system(size: ScreenSize.titleFontSize, weight: .bold))
@@ -710,10 +786,10 @@ struct AddTabView: View {
                     AddOptionButton(
                         icon: "checklist",
                         title: "New Task",
-                        isSelected: selectedOption == .task
+                        isSelected: self.selectedOption == .task
                     ) {
                         withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
-                            selectedOption = .task
+                            self.selectedOption = .task
                         }
                         HapticManager.shared.impact(.medium)
                         print("New task selected")
@@ -722,10 +798,10 @@ struct AddTabView: View {
                     AddOptionButton(
                         icon: "person.2.fill",
                         title: "New Meeting",
-                        isSelected: selectedOption == .meeting
+                        isSelected: self.selectedOption == .meeting
                     ) {
                         withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
-                            selectedOption = .meeting
+                            self.selectedOption = .meeting
                         }
                         HapticManager.shared.impact(.medium)
                         print("New meeting selected")
@@ -734,10 +810,10 @@ struct AddTabView: View {
                     AddOptionButton(
                         icon: "note.text",
                         title: "New Note",
-                        isSelected: selectedOption == .note
+                        isSelected: self.selectedOption == .note
                     ) {
                         withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
-                            selectedOption = .note
+                            self.selectedOption = .note
                         }
                         HapticManager.shared.impact(.medium)
                         print("New note selected")
@@ -747,14 +823,20 @@ struct AddTabView: View {
             }
         }
         .onAppear {
-            isRotating = true
+            self.isRotating = true
         }
     }
 }
 
+// MARK: - DocumentTabView
+
 struct DocumentTabView: View {
+    // MARK: SwiftUI Properties
+
     @State private var isAnimating = false
     @State private var isPressed = false
+
+    // MARK: Content Properties
 
     var body: some View {
         ZStack {
@@ -765,10 +847,11 @@ struct DocumentTabView: View {
                 Image(systemName: "doc.fill")
                     .font(.system(size: ScreenSize.largeIconSize))
                     .foregroundColor(Color(hex: "#7FE8A8"))
-                    .offset(y: isAnimating ? -5 : 5)
+                    .offset(y: self.isAnimating ? -5 : 5)
                     .animation(
                         .easeInOut(duration: 1.5).repeatForever(autoreverses: true),
-                        value: isAnimating)
+                        value: self.isAnimating
+                    )
 
                 Text("Documents")
                     .font(.system(size: ScreenSize.titleFontSize, weight: .bold))
@@ -795,27 +878,34 @@ struct DocumentTabView: View {
                     .background(Color(hex: "#7FE8A8"))
                     .clipShape(RoundedRectangle(cornerRadius: 12))
                 }
-                .scaleEffect(isPressed ? 0.95 : 1.0)
-                .animation(.spring(response: 0.3, dampingFraction: 0.6), value: isPressed)
+                .scaleEffect(self.isPressed ? 0.95 : 1.0)
+                .animation(.spring(response: 0.3, dampingFraction: 0.6), value: self.isPressed)
                 .buttonStyle(PlainButtonStyle())
                 .onLongPressGesture(
                     minimumDuration: 0.5,
                     pressing: { pressing in
                         withAnimation {
-                            isPressed = pressing
+                            self.isPressed = pressing
                         }
-                    }, perform: {})
+                    }, perform: {}
+                )
             }
         }
         .onAppear {
-            isAnimating = true
+            self.isAnimating = true
         }
     }
 }
 
+// MARK: - ProfileTabView
+
 struct ProfileTabView: View {
+    // MARK: SwiftUI Properties
+
     @State private var isPulsing = false
     @State private var isPressed = false
+
+    // MARK: Content Properties
 
     var body: some View {
         ZStack {
@@ -827,11 +917,12 @@ struct ProfileTabView: View {
                     Circle()
                         .fill(Color(hex: "#7FE8A8").opacity(0.2))
                         .frame(width: 100, height: 100)
-                        .scaleEffect(isPulsing ? 1.2 : 1.0)
-                        .opacity(isPulsing ? 0 : 1)
+                        .scaleEffect(self.isPulsing ? 1.2 : 1.0)
+                        .opacity(self.isPulsing ? 0 : 1)
                         .animation(
                             .easeOut(duration: 1.5).repeatForever(autoreverses: false),
-                            value: isPulsing)
+                            value: self.isPulsing
+                        )
 
                     Image(systemName: "person.fill")
                         .font(.system(size: 50))
@@ -857,16 +948,20 @@ struct ProfileTabView: View {
             }
         }
         .onAppear {
-            isPulsing = true
+            self.isPulsing = true
         }
     }
 }
 
-// MARK: - Header View (Same)
+// MARK: - HeaderView
 
 struct HeaderView: View {
+    // MARK: SwiftUI Properties
+
     @State private var isMenuPressed = false
     @State private var isNotificationPressed = false
+
+    // MARK: Content Properties
 
     var body: some View {
         HStack {
@@ -877,17 +972,18 @@ struct HeaderView: View {
                     .foregroundColor(.white)
                     .font(.system(size: ScreenSize.iconSize))
                     .frame(width: ScreenSize.minButtonHeight, height: ScreenSize.minButtonHeight)
-                    .background(isMenuPressed ? Color.white.opacity(0.2) : Color.white.opacity(0.1))
+                    .background(self.isMenuPressed ? Color.white.opacity(0.2) : Color.white.opacity(0.1))
                     .clipShape(RoundedRectangle(cornerRadius: 12))
             }
-            .scaleEffect(isMenuPressed ? 0.95 : 1.0)
+            .scaleEffect(self.isMenuPressed ? 0.95 : 1.0)
             .onLongPressGesture(
                 minimumDuration: 0.1,
                 pressing: { pressing in
                     withAnimation(.easeInOut(duration: 0.1)) {
-                        isMenuPressed = pressing
+                        self.isMenuPressed = pressing
                     }
-                }, perform: {})
+                }, perform: {}
+            )
 
             Spacer()
 
@@ -910,25 +1006,26 @@ struct HeaderView: View {
                     .font(.system(size: ScreenSize.iconSize))
                     .frame(width: ScreenSize.minButtonHeight, height: ScreenSize.minButtonHeight)
                     .background(
-                        isNotificationPressed ? Color.white.opacity(0.2) : Color.white.opacity(0.1)
+                        self.isNotificationPressed ? Color.white.opacity(0.2) : Color.white.opacity(0.1)
                     )
                     .clipShape(RoundedRectangle(cornerRadius: 12))
             }
-            .scaleEffect(isNotificationPressed ? 0.95 : 1.0)
+            .scaleEffect(self.isNotificationPressed ? 0.95 : 1.0)
             .onLongPressGesture(
                 minimumDuration: 0.1,
                 pressing: { pressing in
                     withAnimation(.easeInOut(duration: 0.1)) {
-                        isNotificationPressed = pressing
+                        self.isNotificationPressed = pressing
                     }
-                }, perform: {})
+                }, perform: {}
+            )
         }
         .padding(.horizontal, ScreenSize.horizontalPadding)
         .padding(.vertical, 10)
     }
 }
 
-// MARK: - Productivity Card (Same)
+// MARK: - ProductivityCard
 
 struct ProductivityCard: View {
     let isSelected: Bool
@@ -936,7 +1033,7 @@ struct ProductivityCard: View {
     @State private var isPressed = false
 
     var body: some View {
-        Button(action: onTap) {
+        Button(action: self.onTap) {
             VStack(alignment: .leading, spacing: 12) {
                 Text("7 tasks to complete today")
                     .font(.system(size: ScreenSize.titleFontSize, weight: .bold))
@@ -967,7 +1064,8 @@ struct ProductivityCard: View {
                         .font(
                             .system(
                                 size: min(ScreenSize.largeTitleSize + 4, ScreenSize.width * 0.08),
-                                weight: .bold)
+                                weight: .bold
+                            )
                         )
                         .foregroundColor(.black.opacity(0.2))
                 }
@@ -983,26 +1081,28 @@ struct ProductivityCard: View {
             .clipShape(RoundedRectangle(cornerRadius: 20))
             .overlay(
                 RoundedRectangle(cornerRadius: 20)
-                    .stroke(isSelected ? Color.white : Color.clear, lineWidth: 2)
+                    .stroke(self.isSelected ? Color.white : Color.clear, lineWidth: 2)
             )
             .shadow(
-                color: isSelected ? Color(hex: "#7FE8A8").opacity(0.3) : .clear, radius: 8, x: 0,
-                y: 4)
+                color: self.isSelected ? Color(hex: "#7FE8A8").opacity(0.3) : .clear, radius: 8, x: 0,
+                y: 4
+            )
         }
-        .scaleEffect(isPressed ? 0.97 : 1.0)
-        .animation(.spring(response: 0.3, dampingFraction: 0.6), value: isPressed)
+        .scaleEffect(self.isPressed ? 0.97 : 1.0)
+        .animation(.spring(response: 0.3, dampingFraction: 0.6), value: self.isPressed)
         .buttonStyle(PlainButtonStyle())
         .onLongPressGesture(
             minimumDuration: 0.5,
             pressing: { pressing in
                 withAnimation(.easeInOut(duration: 0.1)) {
-                    isPressed = pressing
+                    self.isPressed = pressing
                 }
-            }, perform: {})
+            }, perform: {}
+        )
     }
 }
 
-// MARK: - Today Tasks Section (Same)
+// MARK: - TodayTasksSection
 
 struct TodayTasksSection: View {
     let tasks: [Task]
@@ -1022,7 +1122,7 @@ struct TodayTasksSection: View {
 
                 Spacer()
 
-                Text("\(tasks.count) tasks")
+                Text("\(self.tasks.count) tasks")
                     .font(.system(size: ScreenSize.smallFontSize))
                     .foregroundColor(.gray)
                     .dynamicTypeSize(...DynamicTypeSize.xxxLarge)
@@ -1030,18 +1130,18 @@ struct TodayTasksSection: View {
 
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 12) {
-                    ForEach(tasks) { task in
+                    ForEach(self.tasks) { task in
                         TodayTaskCard(
                             task: task,
-                            isSelected: selectedTask?.id == task.id,
-                            onTap: { onTaskTap(task) }
+                            isSelected: self.selectedTask?.id == task.id,
+                            onTap: { self.onTaskTap(task) }
                         )
                     }
 
                     TeamMeetingCard(
-                        meeting: meeting,
-                        isSelected: selectedMeeting?.id == meeting.id,
-                        onTap: { onMeetingTap(meeting) }
+                        meeting: self.meeting,
+                        isSelected: self.selectedMeeting?.id == self.meeting.id,
+                        onTap: { self.onMeetingTap(self.meeting) }
                     )
 
                     AddMoreCard()
@@ -1053,7 +1153,7 @@ struct TodayTasksSection: View {
     }
 }
 
-// MARK: - Today Task Card (Same)
+// MARK: - TodayTaskCard
 
 struct TodayTaskCard: View {
     let task: Task
@@ -1062,16 +1162,16 @@ struct TodayTaskCard: View {
     @State private var isPressed = false
 
     var body: some View {
-        Button(action: onTap) {
+        Button(action: self.onTap) {
             VStack(alignment: .leading, spacing: 12) {
-                Text(task.title)
+                Text(self.task.title)
                     .font(.system(size: ScreenSize.bodyFontSize, weight: .semibold))
                     .foregroundColor(.white)
                     .lineLimit(1)
                     .minimumScaleFactor(0.8)
                     .dynamicTypeSize(...DynamicTypeSize.xxxLarge)
 
-                Text(task.description)
+                Text(self.task.description)
                     .font(.system(size: ScreenSize.smallFontSize))
                     .foregroundColor(.gray)
                     .lineLimit(2)
@@ -1092,32 +1192,33 @@ struct TodayTaskCard: View {
             }
             .frame(width: ScreenSize.cardWidth, height: ScreenSize.cardHeight)
             .padding(16)
-            .background(isSelected ? Color(hex: "#3C3C3E") : Color(hex: "#2C2C2E"))
+            .background(self.isSelected ? Color(hex: "#3C3C3E") : Color(hex: "#2C2C2E"))
             .clipShape(RoundedRectangle(cornerRadius: 16))
             .overlay(
                 RoundedRectangle(cornerRadius: 16)
-                    .stroke(isSelected ? Color(hex: "#7FE8A8") : Color.clear, lineWidth: 2)
+                    .stroke(self.isSelected ? Color(hex: "#7FE8A8") : Color.clear, lineWidth: 2)
             )
             .shadow(
-                color: isSelected ? Color(hex: "#7FE8A8").opacity(0.2) : .clear, radius: 8, x: 0,
+                color: self.isSelected ? Color(hex: "#7FE8A8").opacity(0.2) : .clear, radius: 8, x: 0,
                 y: 4
             )
-            .scaleEffect(isPressed ? 0.95 : 1.0)
+            .scaleEffect(self.isPressed ? 0.95 : 1.0)
         }
         .buttonStyle(PlainButtonStyle())
-        .animation(.spring(response: 0.3, dampingFraction: 0.6), value: isPressed)
-        .animation(.spring(response: 0.3, dampingFraction: 0.6), value: isSelected)
+        .animation(.spring(response: 0.3, dampingFraction: 0.6), value: self.isPressed)
+        .animation(.spring(response: 0.3, dampingFraction: 0.6), value: self.isSelected)
         .onLongPressGesture(
             minimumDuration: 0.5,
             pressing: { pressing in
                 withAnimation(.easeInOut(duration: 0.1)) {
-                    isPressed = pressing
+                    self.isPressed = pressing
                 }
-            }, perform: {})
+            }, perform: {}
+        )
     }
 }
 
-// MARK: - Team Meeting Card (Same)
+// MARK: - TeamMeetingCard
 
 struct TeamMeetingCard: View {
     let meeting: Meeting
@@ -1127,23 +1228,23 @@ struct TeamMeetingCard: View {
     @State private var selectedMemberIndex: Int?
 
     var body: some View {
-        Button(action: onTap) {
+        Button(action: self.onTap) {
             VStack(alignment: .leading, spacing: 12) {
-                Text(meeting.title)
+                Text(self.meeting.title)
                     .font(.system(size: ScreenSize.bodyFontSize, weight: .semibold))
                     .foregroundColor(.white)
                     .lineLimit(1)
                     .minimumScaleFactor(0.8)
                     .dynamicTypeSize(...DynamicTypeSize.xxxLarge)
 
-                Text(meeting.description)
+                Text(self.meeting.description)
                     .font(.system(size: ScreenSize.smallFontSize))
                     .foregroundColor(.gray)
                     .lineLimit(1)
                     .dynamicTypeSize(...DynamicTypeSize.xxxLarge)
 
                 HStack(spacing: -8) {
-                    ForEach(Array(meeting.participants.prefix(4).enumerated()), id: \.offset) {
+                    ForEach(Array(self.meeting.participants.prefix(4).enumerated()), id: \.offset) {
                         index, participant in
                         Circle()
                             .fill(Color.orange)
@@ -1156,15 +1257,15 @@ struct TeamMeetingCard: View {
                             .overlay(
                                 Circle()
                                     .stroke(
-                                        selectedMemberIndex == index
+                                        self.selectedMemberIndex == index
                                             ? Color(hex: "#7FE8A8") : Color(hex: "#2C2C2E"),
                                         lineWidth: 2
                                     )
                             )
-                            .scaleEffect(selectedMemberIndex == index ? 1.1 : 1.0)
+                            .scaleEffect(self.selectedMemberIndex == index ? 1.1 : 1.0)
                             .onTapGesture {
                                 withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
-                                    selectedMemberIndex = index
+                                    self.selectedMemberIndex = index
                                 }
                             }
                     }
@@ -1172,42 +1273,47 @@ struct TeamMeetingCard: View {
 
                 Spacer()
 
-                Text("Today \(meeting.time)")
+                Text("Today \(self.meeting.time)")
                     .font(.system(size: ScreenSize.captionFontSize))
                     .foregroundColor(.gray)
                     .dynamicTypeSize(...DynamicTypeSize.xxxLarge)
             }
             .frame(width: ScreenSize.cardWidth, height: ScreenSize.cardHeight)
             .padding(16)
-            .background(isSelected ? Color(hex: "#3C3C3E") : Color(hex: "#2C2C2E"))
+            .background(self.isSelected ? Color(hex: "#3C3C3E") : Color(hex: "#2C2C2E"))
             .clipShape(RoundedRectangle(cornerRadius: 16))
             .overlay(
                 RoundedRectangle(cornerRadius: 16)
-                    .stroke(isSelected ? Color(hex: "#7FE8A8") : Color.clear, lineWidth: 2)
+                    .stroke(self.isSelected ? Color(hex: "#7FE8A8") : Color.clear, lineWidth: 2)
             )
             .shadow(
-                color: isSelected ? Color(hex: "#7FE8A8").opacity(0.2) : .clear, radius: 8, x: 0,
+                color: self.isSelected ? Color(hex: "#7FE8A8").opacity(0.2) : .clear, radius: 8, x: 0,
                 y: 4
             )
-            .scaleEffect(isPressed ? 0.95 : 1.0)
+            .scaleEffect(self.isPressed ? 0.95 : 1.0)
         }
         .buttonStyle(PlainButtonStyle())
-        .animation(.spring(response: 0.3, dampingFraction: 0.6), value: isPressed)
-        .animation(.spring(response: 0.3, dampingFraction: 0.6), value: isSelected)
+        .animation(.spring(response: 0.3, dampingFraction: 0.6), value: self.isPressed)
+        .animation(.spring(response: 0.3, dampingFraction: 0.6), value: self.isSelected)
         .onLongPressGesture(
             minimumDuration: 0.5,
             pressing: { pressing in
                 withAnimation(.easeInOut(duration: 0.1)) {
-                    isPressed = pressing
+                    self.isPressed = pressing
                 }
-            }, perform: {})
+            }, perform: {}
+        )
     }
 }
 
-// MARK: - Add More Card (Same)
+// MARK: - AddMoreCard
 
 struct AddMoreCard: View {
+    // MARK: SwiftUI Properties
+
     @State private var isPressed = false
+
+    // MARK: Content Properties
 
     var body: some View {
         Button(action: {
@@ -1239,21 +1345,22 @@ struct AddMoreCard: View {
                             .fill(Color(hex: "#7FE8A8").opacity(0.05))
                     )
             )
-            .scaleEffect(isPressed ? 0.95 : 1.0)
+            .scaleEffect(self.isPressed ? 0.95 : 1.0)
         }
         .buttonStyle(PlainButtonStyle())
-        .animation(.spring(response: 0.3, dampingFraction: 0.6), value: isPressed)
+        .animation(.spring(response: 0.3, dampingFraction: 0.6), value: self.isPressed)
         .onLongPressGesture(
             minimumDuration: 0.5,
             pressing: { pressing in
                 withAnimation(.easeInOut(duration: 0.1)) {
-                    isPressed = pressing
+                    self.isPressed = pressing
                 }
-            }, perform: {})
+            }, perform: {}
+        )
     }
 }
 
-// MARK: - All Tasks Section (UPDATED - iPad Grid Layout)
+// MARK: - AllTasksSection
 
 struct AllTasksSection: View {
     @Binding var selectedFilter: Task.TaskStatus?
@@ -1265,12 +1372,12 @@ struct AllTasksSection: View {
     var filteredTasks: [Task] {
         let statusFiltered: [Task]
         if let filter = selectedFilter {
-            statusFiltered = tasks.filter { $0.status == filter }
+            statusFiltered = self.tasks.filter { $0.status == filter }
         } else {
-            statusFiltered = tasks
+            statusFiltered = self.tasks
         }
         // Filter out tasks marked for deletion
-        return statusFiltered.filter { !tasksToDelete.contains($0.id) }
+        return statusFiltered.filter { !self.tasksToDelete.contains($0.id) }
     }
 
     var body: some View {
@@ -1284,7 +1391,7 @@ struct AllTasksSection: View {
                 Spacer()
 
                 HStack(spacing: 4) {
-                    Text("\(filteredTasks.count)")
+                    Text("\(self.filteredTasks.count)")
                         .font(.system(size: ScreenSize.smallFontSize, weight: .semibold))
                         .foregroundColor(Color(hex: "#7FE8A8"))
                         .dynamicTypeSize(...DynamicTypeSize.xxxLarge)
@@ -1295,22 +1402,22 @@ struct AllTasksSection: View {
                 HStack(spacing: 12) {
                     FilterChip(
                         title: "All",
-                        isSelected: selectedFilter == nil,
+                        isSelected: self.selectedFilter == nil,
                         color: Color(hex: "#7FE8A8")
                     ) {
                         withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
-                            selectedFilter = nil
+                            self.selectedFilter = nil
                         }
                     }
 
                     ForEach(Task.TaskStatus.allCases, id: \.self) { status in
                         FilterChip(
                             title: status.rawValue,
-                            isSelected: selectedFilter == status,
+                            isSelected: self.selectedFilter == status,
                             color: status.color
                         ) {
                             withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
-                                selectedFilter = status
+                                self.selectedFilter = status
                             }
                         }
                     }
@@ -1320,11 +1427,11 @@ struct AllTasksSection: View {
 
             // Native List with swipe actions
             List {
-                ForEach(filteredTasks) { task in
+                ForEach(self.filteredTasks) { task in
                     TaskCard(
                         task: task,
-                        isSelected: selectedTask?.id == task.id,
-                        onTaskTap: { onTaskTap(task) }
+                        isSelected: self.selectedTask?.id == task.id,
+                        onTaskTap: { self.onTaskTap(task) }
                     )
                     .listRowBackground(Color.clear)
                     .listRowSeparator(.hidden)
@@ -1337,7 +1444,7 @@ struct AllTasksSection: View {
                             Label("Complete", systemImage: "checkmark.circle.fill")
                         }
                         .tint(Color(hex: "#7FE8A8"))
-                        
+
                         Button {
                             HapticManager.shared.impact(.light)
                             print("Mark as in progress: \(task.title)")
@@ -1350,13 +1457,13 @@ struct AllTasksSection: View {
                         Button(role: .destructive) {
                             HapticManager.shared.impact(.heavy)
                             _ = withAnimation {
-                                tasksToDelete.insert(task.id)
+                                self.tasksToDelete.insert(task.id)
                             }
                             print("Delete task: \(task.title)")
                         } label: {
                             Label("Delete", systemImage: "trash.fill")
                         }
-                        
+
                         Button {
                             HapticManager.shared.impact(.light)
                             print("Edit task: \(task.title)")
@@ -1369,12 +1476,12 @@ struct AllTasksSection: View {
             }
             .listStyle(.plain)
             .modifier(ScrollContentBackgroundModifier())
-            .frame(height: CGFloat(filteredTasks.count) * (ScreenSize.cardHeight + ScreenSize.cardSpacing))
+            .frame(height: CGFloat(self.filteredTasks.count) * (ScreenSize.cardHeight + ScreenSize.cardSpacing))
         }
     }
 }
 
-// MARK: - Scroll Content Background Modifier
+// MARK: - ScrollContentBackgroundModifier
 
 struct ScrollContentBackgroundModifier: ViewModifier {
     func body(content: Content) -> some View {
@@ -1386,7 +1493,7 @@ struct ScrollContentBackgroundModifier: ViewModifier {
     }
 }
 
-// MARK: - Filter Chip (UPDATED - With color)
+// MARK: - FilterChip
 
 struct FilterChip: View {
     let title: String
@@ -1396,41 +1503,42 @@ struct FilterChip: View {
     @State private var isPressed = false
 
     var body: some View {
-        Button(action: action) {
+        Button(action: self.action) {
             HStack(spacing: 6) {
                 Circle()
-                    .fill(color)
+                    .fill(self.color)
                     .frame(width: 8, height: 8)
 
-                Text(title)
+                Text(self.title)
                     .font(.system(size: ScreenSize.smallFontSize, weight: .medium))
-                    .foregroundColor(isSelected ? .white : .gray)
+                    .foregroundColor(self.isSelected ? .white : .gray)
                     .dynamicTypeSize(...DynamicTypeSize.xxxLarge)
             }
             .padding(.horizontal, 16)
             .padding(.vertical, 8)
-            .background(isSelected ? color.opacity(0.2) : Color.white.opacity(0.1))
+            .background(self.isSelected ? self.color.opacity(0.2) : Color.white.opacity(0.1))
             .clipShape(RoundedRectangle(cornerRadius: 20))
             .overlay(
                 RoundedRectangle(cornerRadius: 20)
-                    .stroke(isSelected ? color : Color.clear, lineWidth: 1.5)
+                    .stroke(self.isSelected ? self.color : Color.clear, lineWidth: 1.5)
             )
         }
-        .scaleEffect(isPressed ? 0.93 : 1.0)
-        .animation(.spring(response: 0.2, dampingFraction: 0.6), value: isPressed)
-        .animation(.spring(response: 0.3, dampingFraction: 0.7), value: isSelected)
+        .scaleEffect(self.isPressed ? 0.93 : 1.0)
+        .animation(.spring(response: 0.2, dampingFraction: 0.6), value: self.isPressed)
+        .animation(.spring(response: 0.3, dampingFraction: 0.7), value: self.isSelected)
         .buttonStyle(PlainButtonStyle())
         .onLongPressGesture(
             minimumDuration: 0.5,
             pressing: { pressing in
                 withAnimation(.easeInOut(duration: 0.1)) {
-                    isPressed = pressing
+                    self.isPressed = pressing
                 }
-            }, perform: {})
+            }, perform: {}
+        )
     }
 }
 
-// MARK: - Task Card (UPDATED - Show status instead of assigned to)
+// MARK: - TaskCard
 
 struct TaskCard: View {
     let task: Task
@@ -1439,10 +1547,10 @@ struct TaskCard: View {
     @State private var isPressed = false
 
     var body: some View {
-        Button(action: onTaskTap) {
+        Button(action: self.onTaskTap) {
             VStack(alignment: .leading, spacing: 12) {
                 HStack {
-                    Text(task.title)
+                    Text(self.task.title)
                         .font(.system(size: ScreenSize.bodyFontSize, weight: .semibold))
                         .foregroundColor(.white)
                         .lineLimit(1)
@@ -1450,17 +1558,17 @@ struct TaskCard: View {
 
                     Spacer()
 
-                    Text(task.priority.rawValue)
+                    Text(self.task.priority.rawValue)
                         .font(.system(size: ScreenSize.captionFontSize, weight: .medium))
                         .foregroundColor(.white)
                         .dynamicTypeSize(...DynamicTypeSize.large)
                         .padding(.horizontal, 10)
                         .padding(.vertical, 6)
-                        .background(task.priority == .high ? Color(hex: "#FF6B6B") : Color.orange)
+                        .background(self.task.priority == .high ? Color(hex: "#FF6B6B") : Color.orange)
                         .clipShape(RoundedRectangle(cornerRadius: 12))
                 }
 
-                Text(task.description)
+                Text(self.task.description)
                     .font(.system(size: ScreenSize.smallFontSize))
                     .foregroundColor(.gray)
                     .lineLimit(2)
@@ -1490,12 +1598,12 @@ struct TaskCard: View {
                             .foregroundColor(.gray)
 
                         HStack(spacing: 6) {
-                            Image(systemName: task.status.icon)
+                            Image(systemName: self.task.status.icon)
                                 .font(.system(size: ScreenSize.captionFontSize))
-                                .foregroundColor(task.status.color)
-                            Text(task.status.rawValue)
+                                .foregroundColor(self.task.status.color)
+                            Text(self.task.status.rawValue)
                                 .font(.system(size: ScreenSize.smallFontSize, weight: .medium))
-                                .foregroundColor(task.status.color)
+                                .foregroundColor(self.task.status.color)
                                 .lineLimit(1)
                                 .dynamicTypeSize(...DynamicTypeSize.xxxLarge)
                         }
@@ -1503,31 +1611,33 @@ struct TaskCard: View {
                 }
             }
             .padding(16)
-            .background(isSelected ? Color(hex: "#3C3C3E") : Color(hex: "#2C2C2E"))
+            .background(self.isSelected ? Color(hex: "#3C3C3E") : Color(hex: "#2C2C2E"))
             .clipShape(RoundedRectangle(cornerRadius: 16))
             .overlay(
                 RoundedRectangle(cornerRadius: 16)
-                    .stroke(isSelected ? Color(hex: "#7FE8A8") : Color.clear, lineWidth: 2)
+                    .stroke(self.isSelected ? Color(hex: "#7FE8A8") : Color.clear, lineWidth: 2)
             )
             .shadow(
-                color: isSelected ? Color(hex: "#7FE8A8").opacity(0.2) : .clear, radius: 8, x: 0,
-                y: 4)
+                color: self.isSelected ? Color(hex: "#7FE8A8").opacity(0.2) : .clear, radius: 8, x: 0,
+                y: 4
+            )
         }
-        .scaleEffect(isPressed ? 0.97 : 1.0)
-        .animation(.spring(response: 0.3, dampingFraction: 0.6), value: isPressed)
-        .animation(.spring(response: 0.3, dampingFraction: 0.6), value: isSelected)
+        .scaleEffect(self.isPressed ? 0.97 : 1.0)
+        .animation(.spring(response: 0.3, dampingFraction: 0.6), value: self.isPressed)
+        .animation(.spring(response: 0.3, dampingFraction: 0.6), value: self.isSelected)
         .buttonStyle(PlainButtonStyle())
         .onLongPressGesture(
             minimumDuration: 0.5,
             pressing: { pressing in
                 withAnimation(.easeInOut(duration: 0.1)) {
-                    isPressed = pressing
+                    self.isPressed = pressing
                 }
-            }, perform: {})
+            }, perform: {}
+        )
     }
 }
 
-// MARK: - Tab Item Enum
+// MARK: - TabItem
 
 enum TabItem: String, CaseIterable {
     case home = "house.fill"
@@ -1537,7 +1647,7 @@ enum TabItem: String, CaseIterable {
     case profile = "person.fill"
 }
 
-// MARK: - Interactive Button Components
+// MARK: - AddOptionButton
 
 struct AddOptionButton: View {
     let icon: String
@@ -1547,15 +1657,15 @@ struct AddOptionButton: View {
     @State private var isPressed = false
 
     var body: some View {
-        Button(action: action) {
+        Button(action: self.action) {
             HStack {
-                Image(systemName: icon)
+                Image(systemName: self.icon)
                     .font(.system(size: ScreenSize.iconSize))
-                Text(title)
+                Text(self.title)
                     .font(.system(size: ScreenSize.bodyFontSize, weight: .semibold))
                     .dynamicTypeSize(...DynamicTypeSize.xxxLarge)
                 Spacer()
-                if isSelected {
+                if self.isSelected {
                     Image(systemName: "checkmark.circle.fill")
                         .foregroundColor(Color(hex: "#7FE8A8"))
                 }
@@ -1564,29 +1674,32 @@ struct AddOptionButton: View {
             .padding(.horizontal, 20)
             .padding(.vertical, 16)
             .background(
-                isSelected
+                self.isSelected
                     ? Color(hex: "#7FE8A8").opacity(0.2)
                     : Color(hex: "#2C2C2E")
             )
             .clipShape(RoundedRectangle(cornerRadius: 12))
             .overlay(
                 RoundedRectangle(cornerRadius: 12)
-                    .stroke(isSelected ? Color(hex: "#7FE8A8") : Color.clear, lineWidth: 2)
+                    .stroke(self.isSelected ? Color(hex: "#7FE8A8") : Color.clear, lineWidth: 2)
             )
         }
-        .scaleEffect(isPressed ? 0.97 : 1.0)
-        .animation(.spring(response: 0.3, dampingFraction: 0.6), value: isPressed)
-        .animation(.spring(response: 0.3, dampingFraction: 0.7), value: isSelected)
+        .scaleEffect(self.isPressed ? 0.97 : 1.0)
+        .animation(.spring(response: 0.3, dampingFraction: 0.6), value: self.isPressed)
+        .animation(.spring(response: 0.3, dampingFraction: 0.7), value: self.isSelected)
         .buttonStyle(PlainButtonStyle())
         .onLongPressGesture(
             minimumDuration: 0.5,
             pressing: { pressing in
                 withAnimation {
-                    isPressed = pressing
+                    self.isPressed = pressing
                 }
-            }, perform: {})
+            }, perform: {}
+        )
     }
 }
+
+// MARK: - ProfileOptionButton
 
 struct ProfileOptionButton: View {
     let icon: String
@@ -1596,14 +1709,14 @@ struct ProfileOptionButton: View {
     var body: some View {
         Button(action: {
             HapticManager.shared.impact(.medium)
-            print("\(title) tapped")
+            print("\(self.title) tapped")
         }) {
             HStack {
-                Image(systemName: icon)
+                Image(systemName: self.icon)
                     .font(.system(size: ScreenSize.iconSize))
                     .foregroundColor(Color(hex: "#7FE8A8"))
                     .frame(width: 30)
-                Text(title)
+                Text(self.title)
                     .font(.system(size: ScreenSize.bodyFontSize, weight: .medium))
                     .foregroundColor(.white)
                     .dynamicTypeSize(...DynamicTypeSize.xxxLarge)
@@ -1617,32 +1730,43 @@ struct ProfileOptionButton: View {
             .background(Color(hex: "#2C2C2E"))
             .clipShape(RoundedRectangle(cornerRadius: 12))
         }
-        .scaleEffect(isPressed ? 0.97 : 1.0)
-        .animation(.spring(response: 0.3, dampingFraction: 0.6), value: isPressed)
+        .scaleEffect(self.isPressed ? 0.97 : 1.0)
+        .animation(.spring(response: 0.3, dampingFraction: 0.6), value: self.isPressed)
         .buttonStyle(PlainButtonStyle())
         .onLongPressGesture(
             minimumDuration: 0.5,
             pressing: { pressing in
                 withAnimation {
-                    isPressed = pressing
+                    self.isPressed = pressing
                 }
-            }, perform: {})
+            }, perform: {}
+        )
     }
 }
 
-// MARK: - Task Detail View (UPDATED - Status selector)
+// MARK: - TaskDetailView
 
 struct TaskDetailView: View {
-    let task: Task
+    // MARK: SwiftUI Properties
+
     @Binding var isPresented: Bool
-    @State private var selectedStatus: Task.TaskStatus
     @Environment(\.presentationMode) var presentationMode
+
+    @State private var selectedStatus: Task.TaskStatus
+
+    // MARK: Properties
+
+    let task: Task
+
+    // MARK: Lifecycle
 
     init(task: Task, isPresented: Binding<Bool>) {
         self.task = task
         self._isPresented = isPresented
         self._selectedStatus = State(initialValue: task.status)
     }
+
+    // MARK: Content Properties
 
     var body: some View {
         NavigationView {
@@ -1652,7 +1776,7 @@ struct TaskDetailView: View {
 
                 ScrollView(showsIndicators: false) {
                     VStack(alignment: .leading, spacing: 24) {
-                        Text(task.title)
+                        Text(self.task.title)
                             .font(.system(size: ScreenSize.largeTitleSize, weight: .bold))
                             .foregroundColor(.white)
                             .dynamicTypeSize(...DynamicTypeSize.xxxLarge)
@@ -1662,7 +1786,7 @@ struct TaskDetailView: View {
                                 .font(.system(size: ScreenSize.smallFontSize, weight: .semibold))
                                 .foregroundColor(.gray)
 
-                            Text(task.description)
+                            Text(self.task.description)
                                 .font(.system(size: ScreenSize.bodyFontSize))
                                 .foregroundColor(.white)
                                 .lineSpacing(4)
@@ -1679,13 +1803,13 @@ struct TaskDetailView: View {
                                 .foregroundColor(.gray)
 
                             HStack {
-                                Text(task.priority.rawValue)
+                                Text(self.task.priority.rawValue)
                                     .font(.system(size: ScreenSize.bodyFontSize, weight: .medium))
                                     .foregroundColor(.white)
                                     .padding(.horizontal, 16)
                                     .padding(.vertical, 8)
                                     .background(
-                                        task.priority == .high
+                                        self.task.priority == .high
                                             ? Color(hex: "#FF6B6B") : Color.orange
                                     )
                                     .clipShape(RoundedRectangle(cornerRadius: 10))
@@ -1730,11 +1854,10 @@ struct TaskDetailView: View {
                                 ForEach(Task.TaskStatus.allCases, id: \.self) { status in
                                     StatusOptionButton(
                                         status: status,
-                                        isSelected: selectedStatus == status
+                                        isSelected: self.selectedStatus == status
                                     ) {
-                                        withAnimation(.spring(response: 0.3, dampingFraction: 0.7))
-                                        {
-                                            selectedStatus = status
+                                        withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
+                                            self.selectedStatus = status
                                             HapticManager.shared.impact(.light)
                                         }
                                     }
@@ -1749,7 +1872,7 @@ struct TaskDetailView: View {
                         // Action Buttons
                         VStack(spacing: 12) {
                             Button(action: {
-                                print("Save changes - Status: \(selectedStatus.rawValue)")
+                                print("Save changes - Status: \(self.selectedStatus.rawValue)")
                             }) {
                                 HStack {
                                     Image(systemName: "checkmark.circle.fill")
@@ -1757,7 +1880,8 @@ struct TaskDetailView: View {
                                     Text("Save Changes")
                                         .font(
                                             .system(
-                                                size: ScreenSize.bodyFontSize, weight: .semibold))
+                                                size: ScreenSize.bodyFontSize, weight: .semibold
+                                            ))
                                 }
                                 .foregroundColor(.black)
                                 .frame(maxWidth: .infinity)
@@ -1775,7 +1899,8 @@ struct TaskDetailView: View {
                                     Text("Edit Task")
                                         .font(
                                             .system(
-                                                size: ScreenSize.bodyFontSize, weight: .semibold))
+                                                size: ScreenSize.bodyFontSize, weight: .semibold
+                                            ))
                                 }
                                 .foregroundColor(.white)
                                 .frame(maxWidth: .infinity)
@@ -1793,7 +1918,7 @@ struct TaskDetailView: View {
             .navigationBarTitleDisplayMode(.inline)
             .navigationBarItems(
                 leading: Button(action: {
-                    isPresented = false
+                    self.isPresented = false
                 }) {
                     HStack(spacing: 4) {
                         Image(systemName: "chevron.left")
@@ -1814,53 +1939,58 @@ struct TaskDetailView: View {
     }
 }
 
-// MARK: - Status Option Button (NEW)
+// MARK: - StatusOptionButton
 
 struct StatusOptionButton: View {
+    // MARK: Properties
+
     let status: Task.TaskStatus
     let isSelected: Bool
     let action: () -> Void
 
+    // MARK: Content Properties
+
     var body: some View {
-        Button(action: action) {
+        Button(action: self.action) {
             HStack(spacing: 12) {
-                Image(systemName: status.icon)
+                Image(systemName: self.status.icon)
                     .font(.system(size: ScreenSize.iconSize))
-                    .foregroundColor(isSelected ? status.color : .gray)
+                    .foregroundColor(self.isSelected ? self.status.color : .gray)
                     .frame(width: 30)
 
-                Text(status.rawValue)
+                Text(self.status.rawValue)
                     .font(
                         .system(
-                            size: ScreenSize.bodyFontSize, weight: isSelected ? .semibold : .regular
+                            size: ScreenSize.bodyFontSize, weight: self.isSelected ? .semibold : .regular
                         )
                     )
-                    .foregroundColor(isSelected ? .white : .gray)
+                    .foregroundColor(self.isSelected ? .white : .gray)
                     .dynamicTypeSize(...DynamicTypeSize.xxxLarge)
 
                 Spacer()
 
-                if isSelected {
+                if self.isSelected {
                     Image(systemName: "checkmark.circle.fill")
                         .font(.system(size: ScreenSize.iconSize))
-                        .foregroundColor(status.color)
+                        .foregroundColor(self.status.color)
                 }
             }
             .padding()
-            .background(isSelected ? status.color.opacity(0.15) : Color.clear)
+            .background(self.isSelected ? self.status.color.opacity(0.15) : Color.clear)
             .cornerRadius(10)
             .overlay(
                 RoundedRectangle(cornerRadius: 10)
                     .stroke(
-                        isSelected ? status.color : Color.gray.opacity(0.2),
-                        lineWidth: isSelected ? 2 : 1)
+                        self.isSelected ? self.status.color : Color.gray.opacity(0.2),
+                        lineWidth: self.isSelected ? 2 : 1
+                    )
             )
         }
         .buttonStyle(PlainButtonStyle())
     }
 }
 
-// MARK: - Meeting Detail View (Same)
+// MARK: - MeetingDetailView
 
 struct MeetingDetailView: View {
     let meeting: Meeting
@@ -1875,7 +2005,7 @@ struct MeetingDetailView: View {
 
                 ScrollView(showsIndicators: false) {
                     VStack(alignment: .leading, spacing: 24) {
-                        Text(meeting.title)
+                        Text(self.meeting.title)
                             .font(.system(size: ScreenSize.largeTitleSize, weight: .bold))
                             .foregroundColor(.white)
                             .dynamicTypeSize(...DynamicTypeSize.xxxLarge)
@@ -1885,7 +2015,7 @@ struct MeetingDetailView: View {
                                 .font(.system(size: ScreenSize.smallFontSize, weight: .semibold))
                                 .foregroundColor(.gray)
 
-                            Text(meeting.description)
+                            Text(self.meeting.description)
                                 .font(.system(size: ScreenSize.bodyFontSize))
                                 .foregroundColor(.white)
                                 .lineSpacing(4)
@@ -1906,7 +2036,7 @@ struct MeetingDetailView: View {
                                     .font(.system(size: ScreenSize.bodyFontSize))
                                     .foregroundColor(Color(hex: "#7FE8A8"))
 
-                                Text("Today, \(meeting.time)")
+                                Text("Today, \(self.meeting.time)")
                                     .font(.system(size: ScreenSize.bodyFontSize))
                                     .foregroundColor(.white)
 
@@ -1945,12 +2075,12 @@ struct MeetingDetailView: View {
                         }
 
                         VStack(alignment: .leading, spacing: 12) {
-                            Text("Participants (\(meeting.participants.count))")
+                            Text("Participants (\(self.meeting.participants.count))")
                                 .font(.system(size: ScreenSize.smallFontSize, weight: .semibold))
                                 .foregroundColor(.gray)
 
                             VStack(spacing: 12) {
-                                ForEach(meeting.participants) { participant in
+                                ForEach(self.meeting.participants) { participant in
                                     HStack(spacing: 12) {
                                         Circle()
                                             .fill(Color.orange)
@@ -1960,7 +2090,8 @@ struct MeetingDetailView: View {
                                                     .font(
                                                         .system(
                                                             size: ScreenSize.titleFontSize,
-                                                            weight: .semibold)
+                                                            weight: .semibold
+                                                        )
                                                     )
                                                     .foregroundColor(.white)
                                             )
@@ -1970,7 +2101,8 @@ struct MeetingDetailView: View {
                                                 .font(
                                                     .system(
                                                         size: ScreenSize.bodyFontSize,
-                                                        weight: .medium)
+                                                        weight: .medium
+                                                    )
                                                 )
                                                 .foregroundColor(.white)
 
@@ -2003,7 +2135,8 @@ struct MeetingDetailView: View {
                                     Text("Join Meeting")
                                         .font(
                                             .system(
-                                                size: ScreenSize.bodyFontSize, weight: .semibold))
+                                                size: ScreenSize.bodyFontSize, weight: .semibold
+                                            ))
                                 }
                                 .foregroundColor(.black)
                                 .frame(maxWidth: .infinity)
@@ -2021,7 +2154,8 @@ struct MeetingDetailView: View {
                                     Text("Add to Calendar")
                                         .font(
                                             .system(
-                                                size: ScreenSize.bodyFontSize, weight: .semibold))
+                                                size: ScreenSize.bodyFontSize, weight: .semibold
+                                            ))
                                 }
                                 .foregroundColor(.white)
                                 .frame(maxWidth: .infinity)
@@ -2039,7 +2173,7 @@ struct MeetingDetailView: View {
             .navigationBarTitleDisplayMode(.inline)
             .navigationBarItems(
                 leading: Button(action: {
-                    isPresented = false
+                    self.isPresented = false
                 }) {
                     HStack(spacing: 4) {
                         Image(systemName: "chevron.left")
@@ -2060,10 +2194,14 @@ struct MeetingDetailView: View {
     }
 }
 
-// MARK: - Scroll Offset Preference Key
+// MARK: - ScrollOffsetPreferenceKey
 
 struct ScrollOffsetPreferenceKey: PreferenceKey {
+    // MARK: Static Properties
+
     static var defaultValue: CGFloat = 0
+
+    // MARK: Static Functions
 
     static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
         value = nextValue()
@@ -2089,11 +2227,12 @@ extension Color {
         }
         self.init(
             .sRGB, red: Double(r) / 255, green: Double(g) / 255, blue: Double(b) / 255,
-            opacity: Double(a) / 255)
+            opacity: Double(a) / 255
+        )
     }
 }
 
-// MARK: - Preview
+// MARK: - TaskManagementView_Previews
 
 struct TaskManagementView_Previews: PreviewProvider {
     static var previews: some View {

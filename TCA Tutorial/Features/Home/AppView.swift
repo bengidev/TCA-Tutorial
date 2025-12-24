@@ -9,16 +9,20 @@ import ComposableArchitecture
 import SwiftUI
 
 struct AppView: View {
-    let store: StoreOf<AppFeature>
+    // MARK: Properties
+
+    let store: StoreOf<AppReducer>
+
+    // MARK: Content Properties
 
     var body: some View {
         TabView {
-            CounterView(store: store.scope(state: \.tab1, action: \.tab1))
+            CounterView(store: self.store.scope(state: \.tab1, action: \.tab1))
                 .tabItem {
                     Text("Counter 1")
                 }
 
-            CounterView(store: store.scope(state: \.tab2, action: \.tab2))
+            CounterView(store: self.store.scope(state: \.tab2, action: \.tab2))
                 .tabItem {
                     Text("Counter 2")
                 }
@@ -28,8 +32,8 @@ struct AppView: View {
 
 #Preview {
     AppView(
-        store: Store(initialState: AppFeature.State()) {
-            AppFeature()
+        store: Store(initialState: AppReducer.State()) {
+            AppReducer()
         }
     )
 }

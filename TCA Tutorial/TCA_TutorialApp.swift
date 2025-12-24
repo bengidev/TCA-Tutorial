@@ -11,16 +11,22 @@ import SwiftUI
 
 @main
 struct TCA_TutorialApp: App {
-    static let store = Store(initialState: AppReducer.State()) {
-        AppReducer()
+    // MARK: Static Properties
+
+    static let store = Store(initialState: ContactReducer.State()) {
+        ContactReducer()
             ._printChanges()
     }
 
+    // MARK: Properties
+
     let persistenceController = PersistenceController.shared
+
+    // MARK: Computed Properties
 
     var body: some Scene {
         WindowGroup {
-            AppView(store: TCA_TutorialApp.store)
+            ContactView(store: TCA_TutorialApp.store)
         }
     }
 }
