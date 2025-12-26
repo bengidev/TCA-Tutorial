@@ -17,7 +17,7 @@ struct AddContactReducer {
         case setName(String)
 
         // MARK: Nested Types
-
+        @CasePathable
         enum Delegate: Equatable {
             case saveContact(ContactDTO)
         }

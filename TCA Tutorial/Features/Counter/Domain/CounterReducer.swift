@@ -9,7 +9,7 @@ import ComposableArchitecture
 import UIKit
 
 @Reducer struct CounterReducer {
-    @Dependency(\.todoClientAPI) var todoClientAPI
+    // MARK: Nested Types
 
     @ObservableState
     struct State: Equatable {
@@ -31,6 +31,12 @@ import UIKit
     enum CancelID {
         case timer
     }
+
+    // MARK: Properties
+
+    @Dependency(\.todoClientAPI) var todoClientAPI
+
+    // MARK: Computed Properties
 
     var body: some ReducerOf<Self> {
         Reduce { state, action in
@@ -78,7 +84,7 @@ import UIKit
                     }
                 }
 
-            case .factResponse(let fact):
+            case let .factResponse(fact):
                 state.fact = fact
                 state.isLoading = false
                 return .none

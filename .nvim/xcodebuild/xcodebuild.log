@@ -1,0 +1,214 @@
+Resolving Package Graph
+Resolved source packages
+swift-identified-collections - https://github.com/pointfreeco/swift-identified-collections @ 1.1.1
+swift-concurrency-extras - https://github.com/pointfreeco/swift-concurrency-extras @ 1.3.2
+swift-perception - https://github.com/pointfreeco/swift-perception @ 2.0.9
+swift-composable-architecture - https://github.com/pointfreeco/swift-composable-architecture @ 1.23.1
+xctest-dynamic-overlay - https://github.com/pointfreeco/xctest-dynamic-overlay @ 1.8.0
+swift-syntax - https://github.com/swiftlang/swift-syntax @ 602.0.0
+swift-collections - https://github.com/apple/swift-collections @ 1.3.0
+swift-dependencies - https://github.com/pointfreeco/swift-dependencies @ 1.10.0
+swift-case-paths - https://github.com/pointfreeco/swift-case-paths @ 1.7.2
+swift-clocks - https://github.com/pointfreeco/swift-clocks @ 1.0.6
+swift-custom-dump - https://github.com/pointfreeco/swift-custom-dump @ 1.3.3
+XcodebuildNvimPreview - https://github.com/wojciech-kulik/xcodebuild-nvim-preview @ 1.0.11
+swift-navigation - https://github.com/pointfreeco/swift-navigation @ 2.6.0
+swift-sharing - https://github.com/pointfreeco/swift-sharing @ 2.7.4
+combine-schedulers - https://github.com/pointfreeco/combine-schedulers @ 1.1.0
+note: Building targets in dependency order
+note: Target dependency graph (50 targets)
+[swift-composable-architecture_ComposableArchitecture] Processing empty-swift-composable-architecture_ComposableArchitecture.plist
+[swift-sharing_Sharing] Processing empty-swift-sharing_Sharing.plist
+[CasePathsMacros] Linking CasePathsMacros
+[PerceptionMacros] Linking PerceptionMacros
+[ComposableArchitectureMacros] Linking ComposableArchitectureMacros
+[XcodebuildNvimPreview] Linking XcodebuildNvimPreview.o
+[UIKitNavigationShim] Linking UIKitNavigationShim.o
+[Sharing2] Linking Sharing2.o
+[Sharing1] Linking Sharing1.o
+[IssueReportingPackageSupport] Linking IssueReportingPackageSupport.o
+[DependenciesMacrosPlugin] Linking DependenciesMacrosPlugin
+[InternalCollectionsUtilities] Linking InternalCollectionsUtilities.o
+[ConcurrencyExtras] Linking ConcurrencyExtras.o
+[Sharing2] Extract App Intents Metadata
+[XcodebuildNvimPreview] Extract App Intents Metadata
+[Sharing1] Extract App Intents Metadata
+[IssueReportingPackageSupport] Extract App Intents Metadata
+[XcodebuildNvimPreview] RegisterExecutionPolicyException XcodebuildNvimPreview.o
+[InternalCollectionsUtilities] Extract App Intents Metadata
+[ConcurrencyExtras] Extract App Intents Metadata
+[IssueReportingPackageSupport] RegisterExecutionPolicyException IssueReportingPackageSupport.o
+[IssueReporting] Linking IssueReporting.o
+[Sharing1] RegisterExecutionPolicyException Sharing1.o
+[Sharing2] RegisterExecutionPolicyException Sharing2.o
+[IssueReporting] Extract App Intents Metadata
+[InternalCollectionsUtilities] RegisterExecutionPolicyException InternalCollectionsUtilities.o
+[ConcurrencyExtras] RegisterExecutionPolicyException ConcurrencyExtras.o
+[OrderedCollections] Linking OrderedCollections.o
+[OrderedCollections] Extract App Intents Metadata
+[IssueReporting] RegisterExecutionPolicyException IssueReporting.o
+[XCTestDynamicOverlay] Linking XCTestDynamicOverlay.o
+[PerceptionCore] Linking PerceptionCore.o
+[CombineSchedulers] Linking CombineSchedulers.o
+[Clocks] Linking Clocks.o
+[XCTestDynamicOverlay] Extract App Intents Metadata
+[PerceptionCore] Extract App Intents Metadata
+[Clocks] Extract App Intents Metadata
+[CombineSchedulers] Extract App Intents Metadata
+[DependenciesMacros] Compiling Macros.swift
+[CasePaths] Compiling Macros.swift
+[PerceptionCore] RegisterExecutionPolicyException PerceptionCore.o
+[Perception] Compiling Macros.swift
+[OrderedCollections] RegisterExecutionPolicyException OrderedCollections.o
+[CombineSchedulers] RegisterExecutionPolicyException CombineSchedulers.o
+[IdentifiedCollections] Linking IdentifiedCollections.o
+[Clocks] RegisterExecutionPolicyException Clocks.o
+[XCTestDynamicOverlay] RegisterExecutionPolicyException XCTestDynamicOverlay.o
+[IdentifiedCollections] Extract App Intents Metadata
+[Dependencies] Linking Dependencies.o
+[CustomDump] Linking CustomDump.o
+[CasePathsCore] Linking CasePathsCore.o
+[Dependencies] Extract App Intents Metadata
+[CustomDump] Extract App Intents Metadata
+[IdentifiedCollections] RegisterExecutionPolicyException IdentifiedCollections.o
+[CasePathsCore] Extract App Intents Metadata
+[Dependencies] RegisterExecutionPolicyException Dependencies.o
+[CustomDump] RegisterExecutionPolicyException CustomDump.o
+[Sharing] Linking Sharing.o
+[Sharing] Extract App Intents Metadata
+[CasePathsCore] RegisterExecutionPolicyException CasePathsCore.o
+[CasePaths] Copy arm64-apple-ios.abi.json -> CasePaths.abi.json
+[CasePaths] Linking CasePaths.o
+[Sharing] RegisterExecutionPolicyException Sharing.o
+[CasePaths] Extract App Intents Metadata
+[CasePaths] RegisterExecutionPolicyException CasePaths.o
+[DependenciesMacros] Copy arm64-apple-ios.abi.json -> DependenciesMacros.abi.json
+[DependenciesMacros] Linking DependenciesMacros.o
+[DependenciesMacros] Extract App Intents Metadata
+[DependenciesMacros] RegisterExecutionPolicyException DependenciesMacros.o
+[Perception] Copy arm64-apple-ios.abi.json -> Perception.abi.json
+[Perception] Linking Perception.o
+[Perception] Extract App Intents Metadata
+[Perception] RegisterExecutionPolicyException Perception.o
+[SwiftNavigation] Linking SwiftNavigation.o
+[SwiftNavigation] Extract App Intents Metadata
+[SwiftNavigation] RegisterExecutionPolicyException SwiftNavigation.o
+[UIKitNavigationShim] RegisterExecutionPolicyException UIKitNavigationShim.o
+[UIKitNavigation] Linking UIKitNavigation.o
+[UIKitNavigation] Extract App Intents Metadata
+[UIKitNavigation] RegisterExecutionPolicyException UIKitNavigation.o
+[SwiftUINavigation] Linking SwiftUINavigation.o
+[SwiftUINavigation] Extract App Intents Metadata
+[SwiftUINavigation] RegisterExecutionPolicyException SwiftUINavigation.o
+[ComposableArchitecture] Compiling NavigationStack+Observation.swift
+[ComposableArchitecture] Compiling ObservableState.swift
+[ComposableArchitecture] Compiling ObservationStateRegistrar.swift
+[ComposableArchitecture] Compiling Alert+Observation.swift
+[ComposableArchitecture] Compiling Binding+Observation.swift
+[ComposableArchitecture] Compiling IdentifiedArray+Observation.swift
+[ComposableArchitecture] Compiling RuntimeWarnings.swift
+[ComposableArchitecture] Compiling StackIDGenerator.swift
+[ComposableArchitecture] Compiling Macros.swift
+[ComposableArchitecture] Compiling StackReducer.swift
+[ComposableArchitecture] Compiling AppStorageKeyPathKey.swift
+[ComposableArchitecture] Compiling Optional.swift
+[ComposableArchitecture] Compiling PresentationReducer.swift
+[ComposableArchitecture] Compiling Reduce.swift
+[ComposableArchitecture] Compiling Store+Observation.swift
+[ComposableArchitecture] Compiling ViewAction.swift
+[ComposableArchitecture] Compiling OnChange.swift
+[ComposableArchitecture] Compiling Scope.swift
+[ComposableArchitecture] Compiling SignpostReducer.swift
+[ComposableArchitecture] Compiling Store.swift
+[ComposableArchitecture] Compiling Alert.swift
+[ComposableArchitecture] Compiling Publisher.swift
+[ComposableArchitecture] Compiling TaskResult.swift
+[ComposableArchitecture] Compiling Throttle.swift
+[ComposableArchitecture] Compiling AreOrderedSetsDuplicates.swift
+[ComposableArchitecture] Compiling Create.swift
+[ComposableArchitecture] Compiling CurrentValueRelay.swift
+[ComposableArchitecture] Compiling DefaultSubscript.swift
+[ComposableArchitecture] Compiling SwitchStore.swift
+[ComposableArchitecture] Compiling WithViewStore.swift
+[ComposableArchitecture] Compiling TestStore.swift
+[ComposableArchitecture] Compiling AlertStateUIKit.swift
+[ComposableArchitecture] Compiling IfLetUIKit.swift
+[ComposableArchitecture] Compiling ViewStore.swift
+[ComposableArchitecture] Compiling resource_bundle_accessor.swift
+[ComposableArchitecture] Compiling CaseReducer.swift
+[ComposableArchitecture] Compiling Core.swift
+[ComposableArchitecture] Compiling Effect.swift
+[ComposableArchitecture] Compiling Animation.swift
+[ComposableArchitecture] Compiling Cancellation.swift
+[ComposableArchitecture] Compiling Debounce.swift
+[ComposableArchitecture] Compiling FullScreenCover.swift
+[ComposableArchitecture] Compiling Dismiss.swift
+[ComposableArchitecture] Compiling IfLetStore.swift
+[ComposableArchitecture] Compiling NavigationDestination.swift
+[ComposableArchitecture] Compiling NavigationStackStore.swift
+[ComposableArchitecture] Compiling Popover.swift
+[ComposableArchitecture] Compiling PresentationModifier.swift
+[ComposableArchitecture] Compiling Sheet.swift
+[ComposableArchitecture] Compiling NavigationStackControllerUIKit.swift
+[ComposableArchitecture] Compiling OpenExistential.swift
+[ComposableArchitecture] Compiling PresentationID.swift
+[ComposableArchitecture] Compiling Reducer.swift
+[ComposableArchitecture] Compiling ReducerBuilder.swift
+[ComposableArchitecture] Compiling BindingReducer.swift
+[ComposableArchitecture] Compiling CombineReducers.swift
+[ComposableArchitecture] Compiling Binding.swift
+[ComposableArchitecture] Compiling ConfirmationDialog.swift
+[ComposableArchitecture] Compiling ActionSheet.swift
+[ComposableArchitecture] Compiling LegacyAlert.swift
+[ComposableArchitecture] Compiling NavigationLinkStore.swift
+[ComposableArchitecture] Compiling ForEachStore.swift
+[ComposableArchitecture] Compiling ReturningLastNonNilValue.swift
+[ComposableArchitecture] Compiling NotificationName.swift
+[ComposableArchitecture] Compiling DebugReducer.swift
+[ComposableArchitecture] Compiling DependencyKeyWritingReducer.swift
+[ComposableArchitecture] Compiling EmptyReducer.swift
+[ComposableArchitecture] Compiling ForEachReducer.swift
+[ComposableArchitecture] Compiling IfCaseLetReducer.swift
+[ComposableArchitecture] Compiling IfLetReducer.swift
+[ComposableArchitecture] Compiling Deprecations.swift
+[ComposableArchitecture] Compiling DispatchQueue.swift
+[ComposableArchitecture] Compiling EffectActions.swift
+[ComposableArchitecture] Compiling EphemeralState.swift
+[ComposableArchitecture] Compiling HashableStaticString.swift
+[ComposableArchitecture] Compiling Logger.swift
+[ComposableArchitecture] Compiling NavigationID.swift
+[ComposableArchitecture] Compiling IsPresented.swift
+[ComposableArchitecture] Copy arm64-apple-ios.abi.json -> ComposableArchitecture.abi.json
+[ComposableArchitecture] Compiling Debug.swift
+[TCA Tutorial] Compiling ContactReducer.swift
+[x] /Users/enbmacmini/Documents/iOS Projects/TCA_Tutorial/TCA Tutorial/TCA Tutorial/Features/Contact/Domain/ContactReducer.swift:10:12: type 'ContactReducer.State' does not conform to protocol 'Equatable'
+    struct State: Equatable {
+           ^
+[TCA Tutorial] Compiling AddContactView.swift
+[TCA Tutorial] Compiling AppReducer.swift
+[TCA Tutorial] Compiling AppView.swift
+[TCA Tutorial] Compiling ContactView.swift
+[TCA Tutorial] Compiling TodoClientAPI.swift
+[TCA Tutorial] Compiling ContentView.swift
+[TCA Tutorial] Compiling Persistence.swift
+[TCA Tutorial] Compiling TCA_TutorialApp.swift
+[TCA Tutorial] Compiling ContactDTO.swift
+[TCA Tutorial] Compiling AddContactReducer.swift
+[TCA Tutorial] Compiling TodoDTO.swift
+[TCA Tutorial] Compiling CounterReducer.swift
+[TCA Tutorial] Compiling CounterView.swift
+[TCA Tutorial] Compiling HomeView.swift
+[ComposableArchitecture] Linking ComposableArchitecture.o
+
+-----------------------------
+-- xcodebuild.nvim summary --
+-----------------------------
+
+Errors:
+  ✖ /Users/enbmacmini/Documents/iOS Projects/TCA_Tutorial/TCA Tutorial/TCA Tutorial/Features/Contact/Domain/ContactReducer.swift:10:12
+    type 'ContactReducer.State' does not conform to protocol 'Equatable'
+        struct State: Equatable {
+               ^
+
+  Build Failed
+

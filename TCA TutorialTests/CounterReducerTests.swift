@@ -8,7 +8,7 @@ import XCTest
 
 // Tests for CounterReducer actions and state mutations
 @MainActor
-struct CounterFeatureTests {
+struct CounterReducerTests {
     // MARK: Basic increment/decrement functionality
 
     @Test
